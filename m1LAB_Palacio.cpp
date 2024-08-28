@@ -3,6 +3,7 @@
 // Julian Palacio
 // 8/26/24
 #include <iostream>
+#include <iomanip>
 using namespace std;
 
 int main() { 
@@ -15,6 +16,8 @@ int main() {
   // Get user input
   cout << "What is your name?\n";
   cin >> name;
+  cout << "What is the price of the apples?\n";
+  cin >> price_per_apple;
   cout << "-------------------------\n";
   
   // Say hello
@@ -31,6 +34,7 @@ int main() {
 
   // Calculate the total
   double total = num_apples * price_per_apple;
+  cout << fixed << setprecision(2);
   cout << "Your total is $" << total << ".\n";
   
 }
