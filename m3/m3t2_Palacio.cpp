@@ -4,7 +4,7 @@
 using namespace std;
 
 //CSC 134
-//m3t1-Area of Two Rectangles
+//m3t2-Area of Two Rectangles
 //Julian Palacio
 //9/16/24
 
