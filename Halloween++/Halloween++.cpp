@@ -77,6 +77,19 @@ int main() {
     else if (dir =='s') {
         Y_LOC++;
     }
+
+    if (X_LOC > 9) {
+        X_LOC = 9;
+    }
+    else if (X_LOC < 0) {
+        X_LOC = 0;
+    }
+    if (Y_LOC > 9) {
+        Y_LOC = 9;
+    }
+    else if (Y_LOC < 0) {
+        Y_LOC = 0;
+    }
     move(X_LOC, Y_LOC);
     }// end loop
 }
@@ -86,7 +99,7 @@ void move(int X_LOC, int Y_LOC) {
     for (int i = 0; i < 10; i++) {
         for (int j = 0; j < 10; j++) {
             if (X_LOC == j && Y_LOC == i) {
-                cout << "👽 ";
+                cout << "O ";
             }
             else {
                 cout << "_ ";
