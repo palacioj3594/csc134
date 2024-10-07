@@ -10,7 +10,7 @@
 using namespace std;
 
 void seed_generation(int,int);
-void move(int,int);
+void move(int,int,int,int);
 void spawn(int, int);
 
 int main() {
@@ -61,10 +61,11 @@ int main() {
     char dir;
     int X_LOC;
     int Y_LOC;
+    int E_X_LOC, E_Y_LOC;
     X_LOC = 0;
     Y_LOC = 0;
     spawn_check = 0;
-    move(X_LOC, Y_LOC); 
+    move(X_LOC, Y_LOC, E_X_LOC, E_Y_LOC); 
     // start game loop
     while (true){
     direction  = getchar();
@@ -94,7 +95,7 @@ int main() {
     else if (Y_LOC < 0) {
         Y_LOC = 0;
     }
-    move(X_LOC, Y_LOC);
+    
     //Enemy spawn check
     if (respawn_time == 0) {
         if (spawn_check == 0) {
@@ -106,16 +107,20 @@ int main() {
     }
     else {
         respawn_time--;
+        move(X_LOC, Y_LOC, E_X_LOC, E_Y_LOC);
     }
     }// end loop
 }
 
 //For grid building
-void move(int X_LOC, int Y_LOC) {
+void move(int X_LOC, int Y_LOC, int E_X_LOC, int E_Y_LOC) {
     for (int i = 0; i < 10; i++) {
         for (int j = 0; j < 10; j++) {
             if (X_LOC == j && Y_LOC == i) {
                 cout << "O ";
+            }
+            else if (E_X_LOC == j && E_Y_LOC == i){
+                cout << "X ";
             }
             else {
                 cout << "_ ";
@@ -140,8 +145,7 @@ void spawn(int X_LOC, int Y_LOC) {
             E_Y_LOC = rand() % 9;
         }
     }
-    cout << E_X_LOC;
-    cout << E_Y_LOC;
+    move(X_LOC, Y_LOC, E_X_LOC, E_Y_LOC);
 }
 
 void seed_generation(int X_LOC, int Y_LOC) {
