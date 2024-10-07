@@ -4,9 +4,11 @@
 //
 
 #include <iostream>
-
+#include "stdio.h" 
+// for getchar()
 using namespace std;
 
+void move(int,int);
 
 int main() {
 
@@ -52,5 +54,44 @@ int main() {
 
     //cout << MAX_ENEMIES;
     //cout << respawn_time;
+    char direction;
+    char dir;
+    int X_LOC;
+    int Y_LOC;
+    X_LOC = 0;
+    Y_LOC = 0; 
+    move(X_LOC, Y_LOC); 
+    // start game loop
+    while (true){
+    direction  = getchar();
+    cin.get(dir);
+    if (dir == 'd') {
+        X_LOC++;
+    }
+    else if (dir == 'w') {
+        Y_LOC--;
+    }
+    else if (dir == 'a') {
+        X_LOC--;
+    }
+    else if (dir =='s') {
+        Y_LOC++;
+    }
+    move(X_LOC, Y_LOC);
+    }// end loop
+}
 
+void move(int X_LOC, int Y_LOC) {
+    //int X_LOC, Y_LOC;
+    for (int i = 0; i < 10; i++) {
+        for (int j = 0; j < 10; j++) {
+            if (X_LOC == j && Y_LOC == i) {
+                cout << "👽 ";
+            }
+            else {
+                cout << "_ ";
+            }
+        }
+        cout << endl;
+    }
 }
