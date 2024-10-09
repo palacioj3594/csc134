@@ -92,38 +92,38 @@ int main() {
         Y_LOC = 0;
     }
     //Enemy movement
-    // AN: trying something, might not work
-       
-    int rand_dir = rand() % 2;
-    if (rand_dir == 0) {
-        dir_x = rand() % 2;
-    }
-    else {
-        dir_y = rand() % 2;
-    }
-    if (dir_x == 0) {
+    int rand_dir = rand() % 4;
+    const int WEST = 0; // x--
+    const int EAST = 1; // x++
+    const int NORTH = 2;// y--
+    const int SOUTH = 3;// y++
+    if (rand_dir == WEST) {
         E_X_LOC--;
         if (E_X_LOC < 0) {
             E_X_LOC = 0;
         }
     }
-    else {
+    else if (rand_dir == EAST){
         E_X_LOC++;
         if (E_X_LOC > 9) {
             E_X_LOC = 9;
         }
     }
-    if (dir_y == 0) {
+    else if (rand_dir == NORTH) {
         E_Y_LOC--;
         if (E_Y_LOC < 0) {
             E_Y_LOC = 0;
         }
     }
-    else {
+    else if (rand_dir == SOUTH) {
         E_Y_LOC++;
         if (E_Y_LOC > 9) {
             E_Y_LOC = 9;
         }
+    }
+    else {
+        // can't get here
+        cout << "moved but not WENS!!!";
     }
     move(X_LOC, Y_LOC, E_X_LOC, E_Y_LOC);
     }// end loop
