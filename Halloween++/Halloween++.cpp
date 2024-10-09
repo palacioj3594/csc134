@@ -93,7 +93,7 @@ int main() {
     }
     //Enemy movement
     // AN: trying something, might not work
-    
+       
     int rand_dir = rand() % 2;
     if (rand_dir == 0) {
         dir_x = rand() % 2;
