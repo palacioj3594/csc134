@@ -10,11 +10,13 @@
 using namespace std;
 
 void seed_generation(int);
-void move(int,int,int,int,int,int);
+void move(int,int,int,int);
 
 int main() {
 
     string difficulty;
+    int X_LOC;
+    int Y_LOC;
     int starting_point;
     cout << "Starting..." << endl;
 
@@ -22,50 +24,46 @@ int main() {
     cout << "Select your difficulty level (EASY, MEDIUM, HARD): ";
     cin >> difficulty;
     while (difficulty != "EASY" && difficulty != "MEDIUM" && difficulty != "HARD"){
-
         cout << "Please enter EASY, MEDIUM, or HARD!" << endl;
         cout << "Select your difficulty (EASY, MEDIUM, HARD): ";
         cin >> difficulty;
-
     }
 
     //Set variables
     int MAX_ENEMIES;
     if (difficulty == "EASY") {
-
         MAX_ENEMIES = 3;
-
     }
     else if (difficulty == "MEDIUM") {
-
         MAX_ENEMIES = 5;
-
     }
     else {
-
         MAX_ENEMIES = 7;
-
     }
     cout << "You have selected '" << difficulty << "' mode!" << endl;
-    cout << "Please select a place to start at on the grid (1-100)... " << endl;
-    cin >> starting_point;
-    cout << "You have selected point " << starting_point << "." << endl;
-    cout << "Starting....." << endl;
+    X_LOC = rand() % 10;
+    Y_LOC = rand() % 10;
+    starting_point = X_LOC * 10 + Y_LOC;
     seed_generation(starting_point);
+    cout << "Starting....." << endl;
+
 
     //Set up movement
     char direction;
     char dir;
-    int X_LOC;
-    int Y_LOC;
     int E_X_LOC, E_Y_LOC;
     int moves = 0;
-    int spawned;
     X_LOC = 0;
     Y_LOC = 0;
-    move(X_LOC, Y_LOC, E_X_LOC, E_Y_LOC, MAX_ENEMIES, spawned); 
+    E_X_LOC = rand() % 10;
+    E_Y_LOC = rand() % 10;
+    int dir_x;
+    int dir_y;
+    
+    move(X_LOC, Y_LOC, E_X_LOC, E_Y_LOC); 
     // start game loop
     while (true){
+    //Player movement
     direction  = getchar();
     cin.get(dir);
     if (dir == 'd') {
@@ -93,20 +91,47 @@ int main() {
     else if (Y_LOC < 0) {
         Y_LOC = 0;
     }
-    move(X_LOC, Y_LOC, E_X_LOC, E_Y_LOC, MAX_ENEMIES, spawned);
+    //Enemy movement
+    // AN: trying something, might not work
+    
+    int rand_dir = rand() % 2;
+    if (rand_dir == 0) {
+        dir_x = rand() % 2;
+    }
+    else {
+        dir_y = rand() % 2;
+    }
+    if (dir_x == 0) {
+        E_X_LOC--;
+        if (E_X_LOC < 0) {
+            E_X_LOC = 0;
+        }
+    }
+    else {
+        E_X_LOC++;
+        if (E_X_LOC > 9) {
+            E_X_LOC = 9;
+        }
+    }
+    if (dir_y == 0) {
+        E_Y_LOC--;
+        if (E_Y_LOC < 0) {
+            E_Y_LOC = 0;
+        }
+    }
+    else {
+        E_Y_LOC++;
+        if (E_Y_LOC > 9) {
+            E_Y_LOC = 9;
+        }
+    }
+    move(X_LOC, Y_LOC, E_X_LOC, E_Y_LOC);
     }// end loop
 }
 
 //For grid building
-void move(int X_LOC, int Y_LOC, int E_X_LOC, int E_Y_LOC, int MAX_ENEMIES, int spawned) {
-    int place = 1;
-    int size = 100;
-    
-    if (spawned != 1) {
-        for (int k = 0; k < MAX_ENEMIES; k++) {
+void move(int X_LOC, int Y_LOC, int E_X_LOC, int E_Y_LOC) {
 
-        } 
-    }
     for (int i = 0; i < 10; i++) {
         for (int j = 0; j < 10; j++) {
             if (X_LOC == j && Y_LOC == i) {
@@ -117,7 +142,6 @@ void move(int X_LOC, int Y_LOC, int E_X_LOC, int E_Y_LOC, int MAX_ENEMIES, int s
             }
             else {
                 cout << "_ ";
-                place++;
             }
         }
         cout << endl;
@@ -128,6 +152,6 @@ void move(int X_LOC, int Y_LOC, int E_X_LOC, int E_Y_LOC, int MAX_ENEMIES, int s
 void seed_generation(int starting_point) {
     int seed;
     seed = starting_point;
-    std::mt19937 gen(seed); // Got this from AI
+    srand(seed); // Got this from AI
     
 }
