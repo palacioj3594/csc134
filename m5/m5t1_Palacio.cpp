@@ -18,6 +18,5 @@ int main() {
 
 //Function definitions
 void say_hello() {
-    cout << "Hello from the basement creatures!" << endl;
-    return;
+    cout << "Hello from say_hello!" << endl;
 }
