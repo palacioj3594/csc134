@@ -151,9 +151,6 @@ int main() {
                     E_HP--;
                 }
             }
-            else {
-                cout << "TEST FAILED" << endl;
-            }
         attack_check = 4;
         }
         else {
