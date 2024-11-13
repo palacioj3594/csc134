@@ -50,6 +50,9 @@ int ENEMY_VALUES[3][1] = {
     {1}  //
 };
 
+
+
+
 //Weapon values
 int wv_x_size = 1;
 int wv_y_size = 2;
