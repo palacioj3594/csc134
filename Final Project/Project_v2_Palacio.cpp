@@ -5,6 +5,7 @@
 #include <thread>
 #include <chrono>
 #include <random>
+#include <vector>
 
 
 using namespace std;
@@ -34,7 +35,7 @@ typedef struct Player {
     Weapon weapon;
 } Player;
 
-struct Ally1 {
+typedef struct Ally1 {
     int level;
     int strength;
     int agility;
@@ -47,7 +48,7 @@ struct Ally1 {
     Weapon weapon;
 } Ally1;
 
-struct Ally2 {
+typedef struct Ally2 {
     int level;
     int strength;
     int agility;
@@ -77,14 +78,51 @@ typedef struct Slime {
     string name = "Slime";
     int hp = 5;
     int attack = 1;
+    int defense = 0;
+    int enemyNumber = 1;
 } Slime;
+
+typedef struct Skeleton {
+    string name = "Skeleton";
+    int hp = 5;
+    int attack= 3;
+    int defense = 5;
+    int enemyNumber = 2;
+} Skeleton;
+
+typedef struct Fly {
+    string name = "Fly";
+    int hp = 1;
+    int attack = 0;
+    int defense = 0;
+    int enemyNumber = 3;
+} Fly;
+
+typedef struct Enemy {
+    Slime slime;
+    Skeleton skeleton;
+    Fly fly;
+} Enemy;
+
+typedef struct EnemyPool {
+    vector<int> enemies;
+    int poolSize;
+} EnemyPool;
+
+typedef struct Area {
+    string name;
+    EnemyPool enemypool;
+} Area;
+
 
 //Functions
 void save(const Player& player, const Armor& armor, const Weapon& weapon, const string&);
 void load(Player& player, Armor& armor, Weapon& weapon, const string&);
 void newGame(Player player);
 void draw(string);
-void Beginning_Town();
+void Beginning_Town1();
+void Grasslands1(bool);
+void fight(bool, Area area, Enemy enemy);
 
 int main()  {
     string filename = "savedata";
@@ -172,20 +210,56 @@ void newGame(Player player) {
     cout << "You have been helping feed the animals, tend to the crops, and helping around your land." << endl;
     cout << "In this world, there exists magic, which almost anyone can use, but few can master." << endl;
     cout << "The hero's life is about to change.. as a great calamity approaches the town he lives in..." << endl;
-    std::this_thread::sleep_for(std::chrono::seconds(10));
-    string screen = "1";
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    string screen = "Chapter 1";
     draw(screen);
     cout << "\033[2J\033[1;1H";
     cout << "Story stuff goes here. (WIP)" << endl;
-    Beginning_Town();
+    cout << "\033[2J\033[1;1H";
+    Beginning_Town1();
 }
 
-void Beginning_Town() {
-    
+void Beginning_Town1() {
+    //Town layout goes here, but I don't know how to make the town rn
+    cout << "\033[2J\033[1;1H";
+    bool leavingtown = true;
+    Grasslands1(leavingtown);
+}
+
+void Beginning_Town2() {
+
+}
+
+void Grasslands1(bool leavingtown) { 
+    Area area;
+    Enemy enemy;
+    area.name = "Grasslands1";
+    area.enemypool.enemies.clear();
+    area.enemypool.enemies.push_back(enemy.slime.enemyNumber);
+    area.enemypool.enemies.push_back(enemy.fly.enemyNumber);
+    bool fight1;
+    if (leavingtown == true) {
+        leavingtown = false;
+        bool fight1 = true;
+    }
+    fight(fight1, area, enemy);
+}
+
+void fight(bool fight1, Area area, Enemy enemy) {
+    bool fight = true;
+    int NUM_ENEMIES;
+    //
+    if (fight1 == true) {
+        fight1 = false;
+        NUM_ENEMIES = 1;
+    }
+    while (fight == true) {
+        
+    }
 }
 
 void draw(string screen) {
-    if (screen == "1") {   
+    if (screen == "Chapter 1") {   
         cout << "\033[2J\033[1;1H";
         cout << "----------------------------------------------------------------------------" << endl;
         cout << "|   ------   |     |            /|                                         |" << endl;
@@ -199,7 +273,7 @@ void draw(string screen) {
         cout << "|                                           The Prologue                   |" << endl;
         cout << "|                                                                          |" << endl;
         cout << "----------------------------------------------------------------------------" << endl;
-        std::this_thread::sleep_for(std::chrono::seconds(5));
+        std::this_thread::sleep_for(std::chrono::seconds(1));
         return;
     }
 }
