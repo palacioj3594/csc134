@@ -7,6 +7,7 @@
 #include <random>
 #include <vector>
 
+//https://www.youtube.com/watch?v=vjU62r-M1CY&t=3595s
 
 using namespace std;
 
@@ -26,7 +27,7 @@ typedef struct Player {
     int level;
     int strength;
     int agility;
-    int speed;
+    float speed;
     int luck;
     int hp;
     int mp;
@@ -39,7 +40,7 @@ typedef struct Ally1 {
     int level;
     int strength;
     int agility;
-    int speed;
+    float speed;
     int luck;
     int hp;
     int mp;
@@ -52,7 +53,7 @@ typedef struct Ally2 {
     int level;
     int strength;
     int agility;
-    int speed;
+    float speed;
     int luck;
     int hp;
     int mp;
@@ -61,59 +62,29 @@ typedef struct Ally2 {
     Weapon weapon;
 } Ally2;
 
-typedef struct Block {
-    int x;
-    int y;
-    string type;
-} Block;
-
 typedef struct Tile {
-    int x;
-    int y;
-    string type;
-    Block block;
+    bool level;
+    bool traversable = true;
+    int event = 0;
 } Tile;
 
-typedef struct Slime {
-    string name = "Slime";
-    int hp = 5;
-    int attack = 1;
-    int defense = 0;
-    int enemyNumber = 1;
-} Slime;
-
-typedef struct Skeleton {
-    string name = "Skeleton";
-    int hp = 5;
-    int attack= 3;
-    int defense = 5;
-    int enemyNumber = 2;
-} Skeleton;
-
-typedef struct Fly {
-    string name = "Fly";
-    int hp = 1;
-    int attack = 0;
-    int defense = 0;
-    int enemyNumber = 3;
-} Fly;
-
 typedef struct Enemy {
-    Slime slime;
-    Skeleton skeleton;
-    Fly fly;
+    int hp;
+    int attack;
+    int defense;
+    float speed;
 } Enemy;
-
-typedef struct EnemyPool {
-    vector<int> enemies;
-    int poolSize;
-} EnemyPool;
 
 typedef struct Area {
     string name;
-    EnemyPool enemypool;
 } Area;
 
+//Constants
+const int SLIME = 1;
+const int SKELETON = 2;
+const int FLY = 3;
+
+vector<Enemy> enemyPool;
 
 //Functions
 void save(const Player& player, const Armor& armor, const Weapon& weapon, const string&);
@@ -123,6 +94,7 @@ void draw(string);
 void Beginning_Town1();
 void Grasslands1(bool);
 void fight(bool, Area area, Enemy enemy);
+Enemy create_enemy(int);
 
 int main()  {
     string filename = "savedata";
@@ -163,9 +135,6 @@ int main()  {
     else if(main_menu_choice == "LOAD GAME") {
         load(player, armor, weapon, filename);
     }
-
-//    player.weapon.name;
-    
     save(player, armor, weapon, filename);
 }
 
@@ -220,6 +189,9 @@ void newGame(Player player) {
 }
 
 void Beginning_Town1() {
+    Area area;
+    area.name = "Beginning Town";
+
     //Town layout goes here, but I don't know how to make the town rn
     cout << "\033[2J\033[1;1H";
     bool leavingtown = true;
@@ -233,10 +205,11 @@ void Beginning_Town2() {
 void Grasslands1(bool leavingtown) { 
     Area area;
     Enemy enemy;
+    Enemy enemy1;
     area.name = "Grasslands1";
-    area.enemypool.enemies.clear();
-    area.enemypool.enemies.push_back(enemy.slime.enemyNumber);
-    area.enemypool.enemies.push_back(enemy.fly.enemyNumber);
+    enemyPool.clear();
+    enemyPool.push_back(create_enemy(SLIME));
+    enemyPool.push_back(create_enemy(FLY));
     bool fight1;
     if (leavingtown == true) {
         leavingtown = false;
@@ -248,14 +221,39 @@ void Grasslands1(bool leavingtown) {
 void fight(bool fight1, Area area, Enemy enemy) {
     bool fight = true;
     int NUM_ENEMIES;
-    //
+    vector<Enemy> fight_array;
     if (fight1 == true) {
-        fight1 = false;
         NUM_ENEMIES = 1;
+    }
+    for (int i = 0; i < NUM_ENEMIES; i++) {
+        int option = rand() % enemyPool.size();
+        fight_array.push_back(enemyPool[option]);
     }
     while (fight == true) {
         
     }
+}
+
+Enemy create_enemy(int enemy_type) {
+    Enemy enemy;
+    switch (enemy_type) {
+        case SLIME:
+            enemy.hp = 5;
+            enemy.attack = 1;
+            enemy.defense = 0;
+            enemy.speed = 10;
+        case SKELETON:
+            enemy.hp = 5;
+            enemy.attack = 3;
+            enemy.defense = 5;
+            enemy.speed = 15;
+        case FLY:
+            enemy.hp = 1;
+            enemy.attack = 0;
+            enemy.defense = 0;
+            enemy.speed = 1000;
+    }
+    return enemy;
 }
 
 void draw(string screen) {
