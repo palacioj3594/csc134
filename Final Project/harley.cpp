@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <cstdlib>
 using namespace std;
 
 typedef struct Tile {
@@ -58,6 +59,7 @@ int main() {
 
    vector<Enemy> enemyPool;
    enemyPool.push_back(create_enemy(SLIME));
+   system("clear");
 }
 
 Enemy create_enemy(int enemy_type) {

@@ -69,6 +69,7 @@ typedef struct Tile {
 } Tile;
 
 typedef struct Enemy {
+    string name;
     int hp;
     int attack;
     int defense;
@@ -91,9 +92,9 @@ void save(const Player& player, const Armor& armor, const Weapon& weapon, const 
 void load(Player& player, Armor& armor, Weapon& weapon, const string&);
 void newGame(Player player);
 void draw(string);
-void Beginning_Town1();
-void Grasslands1(bool);
-void fight(bool, Area area, Enemy enemy);
+void Beginning_Town1(Player player);
+void Grasslands1(bool, Player player);
+void fight(bool, Area area, Enemy enemy, Player player);
 Enemy create_enemy(int);
 
 int main()  {
@@ -109,14 +110,14 @@ int main()  {
     while (main_menu_choice != "NEW GAME" && main_menu_choice != "LOAD GAME") {
         cout << "INVALID INPUT!" << endl;
         std::this_thread::sleep_for(std::chrono::seconds(2));
-        cout << "\033[2J\033[1;1H";
+        system("clear");
         cout << "Welcome to [GAMENAME]" << endl;
         cout << "NEW GAME" << endl;
         cout << "LOAD GAME" << endl;
         getline (cin, main_menu_choice);
     }
     if (main_menu_choice == "NEW GAME") {
-        cout << "\033[2J\033[1;1H";
+        system("clear");
         cout << "What is the hero's name?" << endl;
         cout << "Enter name: ";
         getline(cin, player.name);
@@ -173,7 +174,7 @@ void load(Player& player, Armor& armor, Weapon& weapon, const string& filename) 
 }
 
 void newGame(Player player) {
-    cout << "\033[2J\033[1;1H";
+    system("clear");
     cout << "Welcome, " << player.name << endl;
     cout << "You are a hero in a fantasy setting, and you have lived in the same city for your entire life." << endl;
     cout << "You have been helping feed the animals, tend to the crops, and helping around your land." << endl;
@@ -182,46 +183,46 @@ void newGame(Player player) {
     std::this_thread::sleep_for(std::chrono::seconds(1));
     string screen = "Chapter 1";
     draw(screen);
-    cout << "\033[2J\033[1;1H";
+    system("clear");
     cout << "Story stuff goes here. (WIP)" << endl;
-    cout << "\033[2J\033[1;1H";
-    Beginning_Town1();
+    system("clear");
+    Beginning_Town1(player);
 }
 
-void Beginning_Town1() {
+void Beginning_Town1(Player player) {
     Area area;
     area.name = "Beginning Town";
 
     //Town layout goes here, but I don't know how to make the town rn
-    cout << "\033[2J\033[1;1H";
+    system("clear");
     bool leavingtown = true;
-    Grasslands1(leavingtown);
+    Grasslands1(leavingtown, player);
 }
 
 void Beginning_Town2() {
 
 }
 
-void Grasslands1(bool leavingtown) { 
+void Grasslands1(bool leavingtown, Player player) { 
     Area area;
     Enemy enemy;
-    Enemy enemy1;
     area.name = "Grasslands1";
     enemyPool.clear();
     enemyPool.push_back(create_enemy(SLIME));
     enemyPool.push_back(create_enemy(FLY));
-    bool fight1;
+    bool fight1 = false;
     if (leavingtown == true) {
+        fight1 = true;
         leavingtown = false;
-        bool fight1 = true;
     }
-    fight(fight1, area, enemy);
+    fight(fight1, area, enemy, player);
 }
 
-void fight(bool fight1, Area area, Enemy enemy) {
+void fight(bool fight1, Area area, Enemy enemy, Player player) {
     bool fight = true;
     int NUM_ENEMIES;
     vector<Enemy> fight_array;
+    fight_array.clear();
     if (fight1 == true) {
         NUM_ENEMIES = 1;
     }
@@ -229,8 +230,30 @@ void fight(bool fight1, Area area, Enemy enemy) {
         int option = rand() % enemyPool.size();
         fight_array.push_back(enemyPool[option]);
     }
+    cout << "You encounter: ";
+    for (const auto& enemy : fight_array) {
+        cout << enemy.name << endl;
+    }
+    std::this_thread::sleep_for(std::chrono::seconds(2));
+    system("clear");
     while (fight == true) {
-        
+        cout << player.name << " " << player.level << ":" << endl;
+        cout << player.hp << "\t" << player.mp << endl;
+        cout << endl;
+        cout << endl;
+        cout << endl;
+        cout << "Enemies: " << endl;
+        for (const auto& enemy : fight_array) {
+        cout << enemy.name << "\t";
+        }
+        cout << endl;
+        for (const auto& enemy : fight_array) {
+        cout << enemy.hp << "\t";
+        }
+        cout << endl;
+        cout << "Choose an action: " << endl;
+        cout << "FIGHT \t MAGIC \t ITEM" << endl;
+        fight = false;
     }
 }
 
@@ -238,16 +261,19 @@ Enemy create_enemy(int enemy_type) {
     Enemy enemy;
     switch (enemy_type) {
         case SLIME:
+            enemy.name = "Slime";
             enemy.hp = 5;
             enemy.attack = 1;
             enemy.defense = 0;
             enemy.speed = 10;
         case SKELETON:
+            enemy.name = "Skeleton";
             enemy.hp = 5;
             enemy.attack = 3;
             enemy.defense = 5;
             enemy.speed = 15;
         case FLY:
+            enemy.name = "Fly";
             enemy.hp = 1;
             enemy.attack = 0;
             enemy.defense = 0;
@@ -258,7 +284,7 @@ Enemy create_enemy(int enemy_type) {
 
 void draw(string screen) {
     if (screen == "Chapter 1") {   
-        cout << "\033[2J\033[1;1H";
+        system("clear");
         cout << "----------------------------------------------------------------------------" << endl;
         cout << "|   ------   |     |            /|                                         |" << endl;
         cout << "|  /         |     |           / |                                         |" << endl;

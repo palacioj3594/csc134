@@ -143,7 +143,7 @@ int damage_roll(int player_str, string player_weapon) {
 
 //This is the start of a new game
 void NEWGAME() {
-    cout << "\033[2J\033[1;1H"; //Clears the screen
+    system("clear"); //Clears the screen
     cout << "Starting a new game!" << endl;
     STORYSTART();
 }
@@ -224,7 +224,7 @@ void STORYSTART() {
     ITEMS.push_back("DREAM");
     ITEMS.push_back("TEST");
     saveGame(filename, name, level, player_str, player_agi, player_spd, player_luck, player_HP, player_MP, player_armor, player_weapon, ITEMS);
-    cout << "\033[2J\033[1;1H";
+    system("clear");
     cout << "Welcome, " << name << endl;
     cout << "You are a hero in a fantasy setting, and you have lived in the same city for your entire life." << endl;
     cout << "You have been helping feed the animals, tend to the crops, and helping around your land." << endl;
@@ -233,7 +233,7 @@ void STORYSTART() {
     std::this_thread::sleep_for(std::chrono::seconds(10));
     string screen = "1";
     draw(screen);
-    cout << "\033[2J\033[1;1H";
+    system("clear");
     cout << "This is the prologue, of which i havent written yet (TODO)" << endl;
     //Other text and things will go here, leading up to the hero leaving toen and going to a temple
     FIGHT(screen, name, fight1, NUM_ENEMIES, level, player_str, player_agi, player_spd, player_luck, player_HP, player_MP, player_armor, player_weapon);
@@ -248,55 +248,55 @@ void FIGHT(string screen, string name, bool fight1, int NUM_ENEMIES, int level, 
         draw(screen);
         cout << "Welcome to the fighting screen!" << endl;
         std::this_thread::sleep_for(std::chrono::seconds(3));
-        cout << "\033[2J\033[1;1H";
+        system("clear");
         draw(screen);
         cout << "You have 4 actions you can take in your turn." << endl;
         std::this_thread::sleep_for(std::chrono::seconds(3));
-        cout << "\033[2J\033[1;1H";
+        system("clear");
         draw(screen);
         cout << "These actions are FIGHT, ITEM, MAGIC, and FLEE." << endl;
         std::this_thread::sleep_for(std::chrono::seconds(3));
-        cout << "\033[2J\033[1;1H";
+        system("clear");
         draw(screen);
         cout << "Fighting will allow you to attack the enemy." << endl;
         std::this_thread::sleep_for(std::chrono::seconds(3));
-        cout << "\033[2J\033[1;1H";
+        system("clear");
         draw(screen);
         cout << "After choosing the attack option, you'll be prompted to choose which enemy to attack from left to right." << endl;
         std::this_thread::sleep_for(std::chrono::seconds(3));
-        cout << "\033[2J\033[1;1H";
+        system("clear");
         draw(screen);
         cout << "You will have to use the number that corresponds to which enemy you want to attack." << endl;
         std::this_thread::sleep_for(std::chrono::seconds(3));
-        cout << "\033[2J\033[1;1H";
+        system("clear");
         draw(screen);
         cout << "Item will allow you to use and item from your inventory." << endl;
         std::this_thread::sleep_for(std::chrono::seconds(3));
-        cout << "\033[2J\033[1;1H";
+        system("clear");
         draw(screen);
         cout << "You will need to type the item number for which item you want to use in order to use it." << endl;
         std::this_thread::sleep_for(std::chrono::seconds(3));
-        cout << "\033[2J\033[1;1H";
+        system("clear");
         draw(screen);
         cout << "Magic will bring up the magic menu." << endl;
         std::this_thread::sleep_for(std::chrono::seconds(3));
-        cout << "\033[2J\033[1;1H";
+        system("clear");
         draw(screen);
         cout << "Different magics have different instructions on how to use them." << endl;
         std::this_thread::sleep_for(std::chrono::seconds(3));
-        cout << "\033[2J\033[1;1H";
+        system("clear");
         draw(screen);
         cout << "Flee will let you flee the fight." << endl;
         std::this_thread::sleep_for(std::chrono::seconds(3));
-        cout << "\033[2J\033[1;1H";
+        system("clear");
         draw(screen);
         cout << "You cannot flee from this battle, however." << endl;
         std::this_thread::sleep_for(std::chrono::seconds(3));
-        cout << "\033[2J\033[1;1H";
+        system("clear");
         draw(screen);
         cout << "Each action is case sensitive, so make sure to use caps lock!" << endl;
         std::this_thread::sleep_for(std::chrono::seconds(3));
-        cout << "\033[2J\033[1;1H";
+        system("clear");
     }
     int damage;
     int target_enemy;
@@ -322,7 +322,7 @@ void FIGHT(string screen, string name, bool fight1, int NUM_ENEMIES, int level, 
         //Player Turn
         cout << "Player turn!" << endl;
         std::this_thread::sleep_for(std::chrono::seconds(2));
-        cout << "\033[2J\033[1;1H";
+        system("clear");
         bool action_taken = false;
         draw(screen);
         cout << name << " HP: " << player_HP << "\t" << name << " MP: " << player_MP << endl;
@@ -332,7 +332,7 @@ void FIGHT(string screen, string name, bool fight1, int NUM_ENEMIES, int level, 
         while (action != "FIGHT" && action != "ITEM" && action != "MAGIC" && action != "FLEE") {
             cout << "(INVALID ACTION)" << endl;
             std::this_thread::sleep_for(std::chrono::seconds(2));
-            cout << "\033[2J\033[1;1H";
+            system("clear");
             draw(screen);
             cout << name << "HP: " << player_HP << "\t" << name << "MP: " << player_MP << endl;
             cout << "Choose an action: ";
@@ -367,11 +367,11 @@ void FIGHT(string screen, string name, bool fight1, int NUM_ENEMIES, int level, 
             }
         }
         //Enemy Turn
-        cout << "\033[2J\033[1;1H";
+        system("clear");
         draw(screen);
         cout << "Enemy Turn!" << endl;
         std::this_thread::sleep_for(std::chrono::seconds(2));
-        cout << "\033[2J\033[1;1H";
+        system("clear");
         draw(screen);
         cout << name << " HP: " << player_HP << "\t" << name << " MP: " << player_MP << endl;
         //Check what action the enemy will take
@@ -408,13 +408,13 @@ int enemy_damage_calculation(string enemy) {
 
 //Item menu for battles
 int FIGHT_ITEM_MENU() {
-    cout << "\033[2J\033[1;1H";
+    system("clear");
 
 }
 
 void draw(string screen) {
     if (screen == "1") {   
-        cout << "\033[2J\033[1;1H";
+        system("clear");
         cout << "----------------------------------------------------------------------------" << endl;
         cout << "|   ------   |     |            /|                                         |" << endl;
         cout << "|  /         |     |           / |                                         |" << endl;
@@ -431,7 +431,7 @@ void draw(string screen) {
         return;
     }
     if (screen == "SLIME") {
-        cout << "\033[2J\033[1;1H";
+        system("clear");
         cout << "----------------------------------------------------------------------------" << endl;
         cout << "|                       ________________________                           |" << endl;
         cout << "|                      /                        \\                          |" << endl;
