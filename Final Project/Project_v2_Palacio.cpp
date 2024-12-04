@@ -6,6 +6,7 @@
 #include <chrono>
 #include <random>
 #include <vector>
+#include "getinputcpp.hpp"
 
 //https://www.youtube.com/watch?v=vjU62r-M1CY&t=3595s
 
@@ -96,6 +97,8 @@ void Beginning_Town1(Player player);
 void Grasslands1(bool, Player player);
 void fight(bool, Area area, Enemy enemy, Player player);
 Enemy create_enemy(int);
+void fight_screen(Player player, Enemy enemy, vector<Enemy> fight_array);
+int damageCalc(vector<Enemy> fight_array, int, Player player);
 
 int main()  {
     string filename = "savedata";
@@ -235,26 +238,59 @@ void fight(bool fight1, Area area, Enemy enemy, Player player) {
         cout << enemy.name << endl;
     }
     std::this_thread::sleep_for(std::chrono::seconds(2));
-    system("clear");
     while (fight == true) {
-        cout << player.name << " " << player.level << ":" << endl;
-        cout << player.hp << "\t" << player.mp << endl;
-        cout << endl;
-        cout << endl;
-        cout << endl;
-        cout << "Enemies: " << endl;
-        for (const auto& enemy : fight_array) {
-        cout << enemy.name << "\t";
+        fight_screen(player, enemy, fight_array);
+        string fight_choice;
+        getline(cin, fight_choice);
+        while (fight_choice != "FIGHT" && fight_choice != "MAGIC" && fight_choice != "ITEM") {
+            cout << "INVALID INPUT!" << endl;
+            std::this_thread::sleep_for(std::chrono::seconds(2));
+            fight_screen(player, enemy, fight_array);
+            //fight = false;
         }
-        cout << endl;
-        for (const auto& enemy : fight_array) {
-        cout << enemy.hp << "\t";
+        if (fight_choice == "FIGHT") {
+            cout << "Who do you want to attack? " << endl;
+            int target_enemy = get_input<double>(cin, "Enemy: ");
+            // repeat until they make a valid enemy target choice
+            bool badChoice = true;
+            while (badChoice == true) {
+                if (target_enemy > 0 && target_enemy < fight_array.size()) {
+                    target_enemy - 1;
+                    damageCalc(fight_array, target_enemy, player);
+                    fight_array.at(target_enemy).hp--;
+                    badChoice = false;
+                } else {
+                    cout << "Who do you want to attack? " << endl;
+                    target_enemy = get_input<double>(cin, "Enemy: ");
+                }
+            }
+
         }
-        cout << endl;
-        cout << "Choose an action: " << endl;
-        cout << "FIGHT \t MAGIC \t ITEM" << endl;
-        fight = false;
     }
+}
+
+int damageCalc(vector<Enemy> fight_array, int target_enemy, Player player) {
+    player.weapon.damage
+}
+
+void fight_screen(Player player, Enemy enemy, vector<Enemy> fight_array) {
+    system("clear");
+    cout << player.name << " " << player.level << ":" << endl;
+    cout << "HP: " << player.hp << "\t MP: " << player.mp << endl;
+    cout << endl;
+    cout << endl;
+    cout << endl;
+    cout << "Enemies: " << endl;
+    for (const auto& enemy : fight_array) {
+    cout << enemy.name << "\t";
+    }
+    cout << endl;
+    for (const auto& enemy : fight_array) {
+    cout << enemy.hp << "\t";
+    }
+    cout << endl;
+    cout << "Choose an action: " << endl;
+    cout << "FIGHT \t MAGIC \t ITEM" << endl;
 }
 
 Enemy create_enemy(int enemy_type) {
