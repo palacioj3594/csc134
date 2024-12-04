@@ -99,6 +99,7 @@ void fight(bool, Area area, Enemy enemy, Player player);
 Enemy create_enemy(int);
 void fight_screen(Player player, Enemy enemy, vector<Enemy> fight_array);
 int damageCalc(vector<Enemy> fight_array, int, Player player);
+void getWeapon();
 
 int main()  {
     string filename = "savedata";
@@ -174,6 +175,18 @@ void load(Player& player, Armor& armor, Weapon& weapon, const string& filename) 
         inFile >> player.weapon.name;
     }
     inFile.close();
+}
+
+void getWeapon() {
+    int lineCounter = 0;
+    string line;
+    string weapon_name;
+    ifstream inFile("weapons.txt");
+    while (getline(inFile,line)) {
+        line >> weapon_name;
+        
+    }
+
 }
 
 void newGame(Player player) {
