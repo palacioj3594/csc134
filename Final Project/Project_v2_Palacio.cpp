@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
 #include <stdlib.h>
 #include <thread>
@@ -7,6 +8,7 @@
 #include <random>
 #include <vector>
 #include "getinputcpp.hpp"
+#include <bits/stdc++.h>
 
 //https://www.youtube.com/watch?v=vjU62r-M1CY&t=3595s
 
@@ -21,6 +23,7 @@ typedef struct Armor {
 typedef struct Weapon {
     int damage;
     int quality;
+    string type;
     string name;
 } Weapon;
 
@@ -28,7 +31,7 @@ typedef struct Player {
     int level;
     int strength;
     int agility;
-    float speed;
+    int speed;
     int luck;
     int hp;
     int mp;
@@ -41,7 +44,7 @@ typedef struct Ally1 {
     int level;
     int strength;
     int agility;
-    float speed;
+    int speed;
     int luck;
     int hp;
     int mp;
@@ -54,7 +57,7 @@ typedef struct Ally2 {
     int level;
     int strength;
     int agility;
-    float speed;
+    int speed;
     int luck;
     int hp;
     int mp;
@@ -74,12 +77,18 @@ typedef struct Enemy {
     int hp;
     int attack;
     int defense;
-    float speed;
+    int speed;
 } Enemy;
 
 typedef struct Area {
     string name;
 } Area;
+
+typedef struct TurnOrder {
+    int speed;
+    string name;
+    bool friendly;
+} TurnOrder;
 
 //Constants
 const int SLIME = 1;
@@ -97,15 +106,17 @@ void Beginning_Town1(Player player);
 void Grasslands1(bool, Player player);
 void fight(bool, Area area, Enemy enemy, Player player);
 Enemy create_enemy(int);
-void fight_screen(Player player, Enemy enemy, vector<Enemy> fight_array);
+void fight_screen(Player player, Enemy enemy, vector<Enemy> fight_array, bool);
 int damageCalc(vector<Enemy> fight_array, int, Player player);
-void getWeapon();
+void getWeapon(Player& player);
 
 int main()  {
     string filename = "savedata";
     Player player;
     Armor armor;
     Weapon weapon;
+    int seed = time(0);
+    srand (seed);
     cout << "Welcome to [GAMENAME]" << endl;
     cout << "NEW GAME" << endl;
     cout << "LOAD GAME" << endl;
@@ -132,8 +143,9 @@ int main()  {
         player.luck = 10;
         player.hp = 10;
         player.mp = 10;
-        player.armor.name = "TUNIC";
-        player.weapon.name = "STICK";
+        player.armor.name = "Tunic";
+        player.weapon.name = "Stick";
+        getWeapon(player);
         save(player, armor, weapon, filename);
         newGame(player);
     }
@@ -177,16 +189,24 @@ void load(Player& player, Armor& armor, Weapon& weapon, const string& filename) 
     inFile.close();
 }
 
-void getWeapon() {
-    int lineCounter = 0;
+void getWeapon(Player& player) {
+    int lineCounter = 1;
     string line;
-    string weapon_name;
     ifstream inFile("weapons.txt");
     while (getline(inFile,line)) {
-        line >> weapon_name;
-        
+        istringstream iss(line);
+        string weapon_name;
+        iss >> weapon_name;
+        if (weapon_name == player.weapon.name) {
+            int damage, quality;
+            string type;
+            if (iss >> damage >> quality >> type) {
+                player.weapon.damage = damage;
+                player.weapon.quality = quality;
+                player.weapon.type = type;
+            }
+        }
     }
-
 }
 
 void newGame(Player player) {
@@ -235,9 +255,13 @@ void Grasslands1(bool leavingtown, Player player) {
 }
 
 void fight(bool fight1, Area area, Enemy enemy, Player player) {
+    int turn = 0;
     bool fight = true;
     int NUM_ENEMIES;
+    TurnOrder turnorder;
     vector<Enemy> fight_array;
+    vector<TurnOrder> turn_order;
+    vector<TurnOrder>Sorter;
     fight_array.clear();
     if (fight1 == true) {
         NUM_ENEMIES = 1;
@@ -250,43 +274,93 @@ void fight(bool fight1, Area area, Enemy enemy, Player player) {
     for (const auto& enemy : fight_array) {
         cout << enemy.name << endl;
     }
+    Sorter.push_back({player.speed, player.name, true});
+    for (const auto& enemy : fight_array) {
+        Sorter.push_back({enemy.speed, enemy.name, false});
+    }
+    TurnOrder Sorter1, Sorter2;
+    while (Sorter.size() > 0) {
+        int index = 0;
+        Sorter1 = Sorter[0];
+        for (int i = 1; i < Sorter.size(); i++) {
+            if (Sorter1.speed < Sorter[i].speed) {
+                Sorter1 = Sorter[1];
+                index = i;
+            }
+        }
+        turn_order.push_back(Sorter1);
+        Sorter.erase(Sorter.begin() + index);
+    }
+    for (const auto& turnorder : turn_order) {
+        cout << turnorder.name << endl;
+    }
     std::this_thread::sleep_for(std::chrono::seconds(2));
     while (fight == true) {
-        fight_screen(player, enemy, fight_array);
-        string fight_choice;
-        getline(cin, fight_choice);
-        while (fight_choice != "FIGHT" && fight_choice != "MAGIC" && fight_choice != "ITEM") {
-            cout << "INVALID INPUT!" << endl;
-            std::this_thread::sleep_for(std::chrono::seconds(2));
-            fight_screen(player, enemy, fight_array);
-            //fight = false;
+        turn++;
+        bool playerTurn;
+        if (turn_order[(turn_order.size() + 1) % turn].friendly == true) {
+            playerTurn = true;
         }
-        if (fight_choice == "FIGHT") {
-            cout << "Who do you want to attack? " << endl;
-            int target_enemy = get_input<double>(cin, "Enemy: ");
-            // repeat until they make a valid enemy target choice
-            bool badChoice = true;
-            while (badChoice == true) {
-                if (target_enemy > 0 && target_enemy < fight_array.size()) {
-                    target_enemy - 1;
-                    damageCalc(fight_array, target_enemy, player);
-                    fight_array.at(target_enemy).hp--;
-                    badChoice = false;
-                } else {
-                    cout << "Who do you want to attack? " << endl;
-                    target_enemy = get_input<double>(cin, "Enemy: ");
-                }
+        else {
+            playerTurn = false;
+        }
+        fight_screen(player, enemy, fight_array, playerTurn);
+        if (playerTurn == true) {
+            string fight_choice;
+            getline(cin, fight_choice);
+            while (fight_choice != "FIGHT" && fight_choice != "MAGIC" && fight_choice != "ITEM") {
+                cout << "INVALID INPUT!" << endl;
+                std::this_thread::sleep_for(std::chrono::seconds(2));
+                fight_screen(player, enemy, fight_array, playerTurn);
             }
+            if (fight_choice == "FIGHT") {
+                cout << "Who do you want to attack? " << endl;
+                int target_enemy = get_input<double>(cin, "Enemy: ");
+                // repeat until they make a valid enemy target choice
+                bool badChoice = true;
+                while (badChoice == true) {
+                    if (target_enemy > 0 && target_enemy <= fight_array.size()) {
+                        target_enemy -= 1;
+                        int damage = damageCalc(fight_array, target_enemy, player);
+                        fight_array.at(target_enemy).hp -= damage;
+                        cout << player.name << " attacked " << fight_array.at(target_enemy).name << " for " << damage << " damage!" << endl;
+                        std::this_thread::sleep_for(std::chrono::seconds(1));
+                        badChoice = false;
+                        if (fight_array.at(target_enemy).hp <= 0) {
+                            fight_array.erase(fight_array.begin() + target_enemy);
+                        }
+                    } else {
+                        cout << "Who do you want to attack? " << endl;
+                        target_enemy = get_input<double>(cin, "Enemy: ");
+                    }
+                }
 
+            }
+            else if (fight_choice == "MAGIC") {
+
+            }
+        }
+        else {
+            player.hp--;
         }
     }
 }
 
 int damageCalc(vector<Enemy> fight_array, int target_enemy, Player player) {
-    player.weapon.damage
+    int damage;
+    if (player.weapon.type == "sword") {
+        int strMOD = player.level + player.strength;
+        if (player.weapon.quality == 0) {
+            damage = (player.weapon.damage * strMOD) / fight_array.at(target_enemy).defense;
+        }
+        else {
+            damage = ((player.weapon.damage * strMOD) / fight_array.at(target_enemy).defense) + ((rand() % player.weapon.quality) + 1);
+        }
+    }
+    return damage;
 }
 
-void fight_screen(Player player, Enemy enemy, vector<Enemy> fight_array) {
+void fight_screen(Player player, Enemy enemy, vector<Enemy> fight_array, bool playerTurn) {
     system("clear");
     cout << player.name << " " << player.level << ":" << endl;
     cout << "HP: " << player.hp << "\t MP: " << player.mp << endl;
@@ -302,8 +376,13 @@ void fight_screen(Player player, Enemy enemy, vector<Enemy> fight_array) {
     cout << enemy.hp << "\t";
     }
     cout << endl;
-    cout << "Choose an action: " << endl;
-    cout << "FIGHT \t MAGIC \t ITEM" << endl;
+    if (playerTurn == true) {
+        cout << "Choose an action: " << endl;
+        cout << "FIGHT \t MAGIC \t ITEM" << endl;
+    }
+    else {
+        cout << "Enemy Turn..." << endl;
+    }
 }
 
 Enemy create_enemy(int enemy_type) {
@@ -313,20 +392,23 @@ Enemy create_enemy(int enemy_type) {
             enemy.name = "Slime";
             enemy.hp = 5;
             enemy.attack = 1;
-            enemy.defense = 0;
+            enemy.defense = 3;
             enemy.speed = 10;
+            break;
         case SKELETON:
             enemy.name = "Skeleton";
             enemy.hp = 5;
             enemy.attack = 3;
             enemy.defense = 5;
             enemy.speed = 15;
+            break;
         case FLY:
             enemy.name = "Fly";
             enemy.hp = 1;
             enemy.attack = 0;
-            enemy.defense = 0;
+            enemy.defense = 1;
             enemy.speed = 1000;
+            break;
     }
     return enemy;
 }
